@@ -29,6 +29,8 @@ def pca_signatures():
     principal_components = pca.fit_transform(np.array(standardized_df))
     # Make it a dataframe again
     principal_df = pd.DataFrame(data=principal_components, index=sig_df.index)
+    # Give the columns more meaningful names
+    principal_df.columns = ["PC " + str(i) for i in range(1, len(principal_df.columns) + 1)]
     return principal_df
 
 

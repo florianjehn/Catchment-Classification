@@ -24,18 +24,18 @@ def seperate_attributes_signatures(meta_df):
     att_df = meta_df.loc[:, ["area_gages2","elev_mean", "slope_mean", "p_seasonality", "frac_snow", 
                              "aridity","high_prec_freq","high_prec_dur", "high_prec_timing",
                              "low_prec_timing","soil_depth_pelletier", "soil_depth_statsgo",
-                             "sand_frac", "silt_frac", "clay_frac", "water_frac",
+                             "sand_frac", "silt_frac", "clay_frac", 
                              "other_frac", "frac_forest", "lai_max", "gvf_max", 
                              "dom_land_cover_frac", "dom_land_cover", "root_depth_50",
                              "root_depth_99", "geol_1st_class", "glim_1st_class_frac",
-                             "carbonate_rocks_frac", "geol_porosity", "geol_permeability"
+                             "carbonate_rocks_frac", "geol_porostiy", "geol_permeability"
                               ]]
     # Rename the columns
     att_df.columns = ["Area", "Mean elevation", "Mean slope", "Seasonality of\nprecipitation",
                       "Fraction of Precipitation\nfalling as snow", "Aridity", "Frequency of high\nprecipitation events",
                       "Duration of high\nprecipitation events", "Timing of high\nprecipitation events",
                       "Timing of low\nprecipitation events", "Depth to bedrock", "Soil depth",
-                      "Sand fraction", "Silt fraction", "Clay fraction", "Water fraction", 
+                      "Sand fraction", "Silt fraction", "Clay fraction", 
                       "Other fraction", "Forest fraction", "LAI maximum", "Green vegetation\n fraction maximum",
                       "Fraction of dominant land cover", "Dominant land cover", 
                       "Root depth 50 %", "Root depth 99 %", "Dominant geological class",
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     meta_df = read_meta()
     att_df, sig_df = seperate_attributes_signatures(meta_df)
     print("Attributes dataframe")
-    print(att_df.describe())
+    print(att_df.describe(include="all"))
     print("Signatures dataframe")
     print(sig_df.describe())
     
