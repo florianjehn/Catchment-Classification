@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Created on Mon Nov 19 12:59:18 2018
@@ -43,8 +44,10 @@ def seperate_attributes_signatures(meta_df):
                       "Subsurface porosity", "Subsurface permeability"]
     # Select the 6 best signatures 
     sig_df = meta_df.loc[:, ["mean_ann_dis", "mean_win_dis", "hfd_mean", "q95", "runoff_ratio", "mean_sum_dis"]]
-    # Remove rivers without signatures
-    sig_df.dropna(inplace=True)
+    # Remove the one river with missnig data in CAMELS
+    sig_df.drop(3281100, inplace=True, axis=0)
+    att_df.drop(3281100, inplace=True, axis=0)
+    
     # Rename the columns
     sig_df.columns = ["Mean annual discharge", "Mean winter discharge", "Mean half-flow date", "Q95 (high flow)", "Runoff ratio", "Mean summer discharge"]
     return att_df, sig_df
