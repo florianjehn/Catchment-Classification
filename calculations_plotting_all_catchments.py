@@ -10,6 +10,7 @@ import read_attributes_signatures
 from sklearn.metrics import calinski_harabaz_score
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
+import scipy.stats as stats
 
 
 def calculate_cluster_metrics(pca_df: pd.DataFrame, att_df: pd.DataFrame, num_classes):
@@ -27,6 +28,7 @@ def calculate_cluster_metrics(pca_df: pd.DataFrame, att_df: pd.DataFrame, num_cl
         X = drop_df[["PC 1", "PC 2"]]
         X = StandardScaler().fit_transform(X)
         labels = drop_df[attribute]
+        print(labels)
         ch_score = calinski_harabaz_score(X=X, labels=labels)
         ch_score_list.append(ch_score)
     chs_df = pd.DataFrame({"Attributes": att_cat_df.columns,"Calinski-Harabaz Score": ch_score_list})
@@ -34,7 +36,7 @@ def calculate_cluster_metrics(pca_df: pd.DataFrame, att_df: pd.DataFrame, num_cl
     return chs_df
 
 
-def categories_meta(meta_df: pd.DataFrame, num_classes):
+def categories_meta(meta_df: pd.DataFrame, class_num_dict):
     """
     Sorts all parameters of the meta dataframe into categories. All
     categories are equal sized (except the already categorical like land cover)
@@ -56,13 +58,39 @@ def categories_meta(meta_df: pd.DataFrame, num_classes):
         else:
             # Difficult to determine the amount of classes
             temp_df.loc[temp_df.index, column] = (pd.qcut(temp_df[column], 
-                                                  q=num_classes,
+                                                  q=class_num_dict[column],
                                                   precision=1,
                                                   duplicates="drop"))
     return temp_df
 
 
-def bar_plots_chs(chs_df, num_class):
+def freedman_diaconis(x):
+    """
+    Calculates the approbriate amount of bins for a sample x
+    
+    Base on "On the histogram as a density estimator:L2 theory"
+    by Freedman and Diaconis (1981)
+    """
+    n = len(x)
+    iqr = stats.iqr(x)
+    bin_width = 2 * (iqr/(n**(1/3)))
+    num_bins = int((max(x) - min(x)) / bin_width)
+    return num_bins
+    
+def calculate_bin_nums(att_df):
+    """
+    Calculates the approbriate number of bins for all catchment attributes
+    and returns them as a dictionary with the attribute as key
+    """
+    bin_nums = {}
+    for att in att_df.columns:
+        # Skip the already categorical data
+        if att_df[att].dtype == float:
+            bin_nums[att] = freedman_diaconis(att_df[att])
+    return bin_nums
+
+
+def bar_plots_chs(chs_df):
     """
     Creates and saves bar plots of the chs scores
     """
@@ -70,24 +98,18 @@ def bar_plots_chs(chs_df, num_class):
     fig = plt.gcf()
     fig.tight_layout()
     fig.set_size_inches(8.3, 11.7)
-    plt.savefig("chs_"+str(num_class)+"_classes")
+    plt.savefig("chs_classes")
     plt.close()
     
     
-    
-    
-    
-
 if __name__ == "__main__":
     variance = 0.8
     pca_df = pca.pca_signatures(variance)
     meta_df = read_attributes_signatures.read_meta()
     att_df, sig_df = read_attributes_signatures.seperate_attributes_signatures(meta_df)
-
-    
-    for i in range(3, 31):
-        chs_df = calculate_cluster_metrics(pca_df, att_df, i)
-        bar_plots_chs(chs_df, i)
+    bin_nums = calculate_bin_nums(att_df)
+    chs_df = calculate_cluster_metrics(pca_df, att_df, bin_nums)
+    bar_plots_chs(chs_df)
 
         
     

@@ -37,5 +37,5 @@ def pca_signatures(variance):
 
 
 if __name__ == "__main__":
-    pca_df = pca_signatures(0.8)
+    pca_df = pca_signatures(0.80)
     print(pca_df.describe())
