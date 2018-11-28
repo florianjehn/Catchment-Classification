@@ -22,10 +22,13 @@ def create_cluster_labels(df: pd.DataFrame, num_groups):
 
     agg_clust = AgglomerativeClustering(n_clusters=num_groups,
                                         linkage="ward")
-    X = df
+    X = df.copy(deep=True)
     X = StandardScaler().fit_transform(X)
     agg_clust.fit(X)
-    labels = list(agg_clust.labels_)
+    labels = pd.DataFrame(list(agg_clust.labels_))
+    labels.index = df.index
+    labels.columns = ["Cluster"]
+    
     return labels
 
 
@@ -42,7 +45,7 @@ def plot_clustering(pca_df_with_labels):
     sns.lmplot(x="PC 1",
                y="PC 2",
                data=pca_df_with_labels,
-               hue="Clustering",
+               hue="Cluster",
                fit_reg=False,
                legend=False,
                #palette="inferno",
@@ -72,10 +75,8 @@ def plot_clustering(pca_df_with_labels):
 if __name__ == "__main__":
     variance = 0.8
     pca_df = pca.pca_signatures(variance)
-    labels = pd.DataFrame(create_cluster_labels(pca_df, 10))
-    labels.index = pca_df.index
+    labels = create_cluster_labels(pca_df, 10)
     pca_df_with_labels = pd.concat([pca_df, labels], axis=1)
-    pca_df_with_labels.columns = ["PC 1", "PC 2", "Clustering"]
     print(pca_df_with_labels.describe())
     plot_clustering(pca_df_with_labels)
     
