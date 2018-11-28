@@ -4,7 +4,6 @@ Created on Wed Nov 28 13:27:32 2018
 
 @author: Florian Ulrich Jehn
 """
-
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import calinski_harabaz_score
@@ -13,6 +12,7 @@ import numpy as np
 import pca
 import seaborn as sns
 import matplotlib.pyplot as plt
+
 
 def create_cluster_labels(df: pd.DataFrame, num_groups):
     """
@@ -34,8 +34,7 @@ def create_cluster_labels(df: pd.DataFrame, num_groups):
 
 def plot_clustering(pca_df_with_labels):
     """
-    Plots the results of the PCA, colored by
-    :return:
+    Plots the clustered PCA
     """
     # Basic set up
     alpha = 0.6
@@ -51,7 +50,6 @@ def plot_clustering(pca_df_with_labels):
                #palette="inferno",
                scatter_kws={"s": 10})
     ax = plt.gca()
-
 
     # Make plot nicer by removing the borders
     ax.set_facecolor("white")

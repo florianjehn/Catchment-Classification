@@ -76,15 +76,20 @@ def weight_regression_by_var(r2_df, var_percents):
     return r2_df["r2_weighted"]
     
 
-def plot_regressions(r2_df_weighted):
+def plot_regressions(r2_df_weighted, describer, a4=False, ax=None):
     """
     Plots the weighted coefficient of determination
     """
-    r2_df_weighted.sort_values().plot(kind="barh", color="#4C72B0")
+    if ax is None:
+        ax = plt.gca()
+    r2_df_weighted.sort_values().plot(kind="barh", color="#4C72B0", ax=ax)
     fig = plt.gcf()
     fig.tight_layout()
-    fig.set_size_inches(8.3, 11.7)
-    plt.savefig("r2_sores.png")
+    if a4:
+        fig.set_size_inches(8.3, 11.7)
+    plt.xlim(0,1)
+    plt.savefig("r2_scores_ " + describer + ".png")
+    plt.close()
     
 
 if __name__ == "__main__":
@@ -96,5 +101,5 @@ if __name__ == "__main__":
     r2_df = calc_all_linear_regressions(pca_df, att_df_encode)
     var_percents = [0.74567053, 0.18828154]
     r2_df_weighted = weight_regression_by_var(r2_df, var_percents)
-    plot_regressions(r2_df_weighted)
+    plot_regressions(r2_df_weighted, "all", a4=True)
     
