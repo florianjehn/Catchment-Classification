@@ -12,6 +12,8 @@ import read_attributes_signatures
 import scipy.stats as stats
 import os
 import sys
+import matplotlib.cm as cm
+import matplotlib.colors as mcolors
 
 
 
@@ -36,10 +38,16 @@ def plot_pca(plotting_df: pd.DataFrame, describers: list):
                    scatter_kws={"s": 10})
         ax = plt.gca()
         # Put the legend out of the figure
-#        legend = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.,
-#                   frameon=True, fancybox=True)
-#        legend.get_frame().set_edgecolor("grey")
-#        legend.get_frame().set_facecolor("white")
+        if plotting_df[describer].dtype == float:
+            normalize = mcolors.Normalize(vmin=plotting_df[describer].min(), vmax=plotting_df[describer].max())
+            scalarmappaple = cm.ScalarMappable(norm=normalize, cmap=cm.inferno)
+            scalarmappaple.set_array(plotting_df[describer])
+            plt.colorbar(scalarmappaple)
+        else:
+            legend = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.,
+                       frameon=True, fancybox=True)
+            legend.get_frame().set_edgecolor("grey")
+            legend.get_frame().set_facecolor("white")
 
         # Make plot nicer by removing the borders
         ax.set_facecolor("white")
@@ -58,19 +66,6 @@ def plot_pca(plotting_df: pd.DataFrame, describers: list):
         fig.tight_layout()
         plt.savefig(describer.replace("\n","") + ".png",  bbox_inches="tight")
         plt.close()
-
-def freedman_diaconis(x):
-    """
-    Calculates the approbriate amount of bins for a sample x
-    
-    Base on "On the histogram as a density estimator:L2 theory"
-    by Freedman and Diaconis (1981)
-    """
-    n = len(x)
-    iqr = stats.iqr(x)
-    bin_width = 2 * (iqr/(n**(1/3)))
-    num_bins = int((max(x) - min(x)) / bin_width)
-    return num_bins
 
 
 if __name__ == "__main__":
