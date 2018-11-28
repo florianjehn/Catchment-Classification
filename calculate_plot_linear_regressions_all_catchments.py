@@ -87,7 +87,6 @@ def plot_regressions(r2_df_weighted):
     plt.savefig("r2_sores.png")
     
 
-
 if __name__ == "__main__":
     variance = 0.8
     pca_df = pca.pca_signatures(variance)
