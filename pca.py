@@ -29,6 +29,8 @@ def pca_signatures(variance):
     standardized_df = StandardScaler().fit_transform(sig_df)
     # Calculate the components
     principal_components = pca.fit_transform(np.array(standardized_df))
+    print("Explained variance of the components (sorted in ascending order):")
+    print(pca.explained_variance_ratio_)
     # Make it a dataframe again
     principal_df = pd.DataFrame(data=principal_components, index=sig_df.index)
     # Give the columns more meaningful names

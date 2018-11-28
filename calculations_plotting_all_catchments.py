@@ -86,7 +86,7 @@ def calculate_bin_nums(att_df):
     for att in att_df.columns:
         # Skip the already categorical data
         if att_df[att].dtype == float:
-            bin_nums[att] = freedman_diaconis(att_df[att])
+            bin_nums[att] = 10# freedman_diaconis(att_df[att])
     return bin_nums
 
 
