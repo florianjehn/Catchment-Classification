@@ -76,23 +76,30 @@ def weight_regression_by_var(r2_df, var_percents):
     return r2_df["r2_weighted"]
     
 
-def plot_regressions(r2_df_weighted, describer, a4=False, ax=None):
+def plot_regressions(r2_df_weighted, describer, color_dict):
     """
     Plots the weighted coefficient of determination
     """
-    if ax is None:
-        ax = plt.gca()
-    r2_df_weighted.sort_values().plot(kind="barh", color="#4C72B0", ax=ax)
+    r2_df_weighted.sort_values().plot(kind="barh", color="#4C72B0")
     fig = plt.gcf()
     fig.tight_layout()
-    if a4:
-        fig.set_size_inches(8.3, 11.7)
+    fig.set_size_inches(8.3, 11.7)
     plt.xlim(0,1)
+    ax = plt.gca()
+    for tick_label in ax.axes.get_yticklabels():
+        tick_text = tick_label.get_text()
+        tick_label.set_color(color_dict[tick_text])
     plt.savefig("r2_scores_ " + describer + ".png")
-    plt.close()
     
 
 if __name__ == "__main__":
+    # Dictionary for the broad categories
+    color_dict = {"Area": "#D64139", "Mean elevation": "#D64139", "Mean slope": "#D64139",
+                  "Fraction of precipitation\nfalling as snow": "royalblue", "Aridity": "royalblue", "Frequency of high\nprecipitation events": "royalblue",
+                  "Depth to bedrock": "#D6BD39", "Sand fraction": "#D6BD39", "Clay fraction": "#D6BD39",
+                  "Forest fraction": "forestgreen", "LAI maximum": "forestgreen", "Green vegetation\nfraction maximum": "forestgreen",
+                  "Dominant geological class": "grey", "Subsurface porosity": "grey", "Subsurface permeability": "grey"}
+    
     variance = 0.8
     pca_df = pca.pca_signatures(variance)
     meta_df = read_attributes_signatures.read_meta()
@@ -101,5 +108,5 @@ if __name__ == "__main__":
     r2_df = calc_all_linear_regressions(pca_df, att_df_encode)
     var_percents = [0.74567053, 0.18828154]
     r2_df_weighted = weight_regression_by_var(r2_df, var_percents)
-    plot_regressions(r2_df_weighted, "all", a4=True)
+    plot_regressions(r2_df_weighted, "all", color_dict)
     

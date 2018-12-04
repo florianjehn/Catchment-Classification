@@ -24,25 +24,17 @@ def seperate_attributes_signatures(meta_df):
     signatures and returns them in seperate dataframes.
     We only selected the attributes also used by Addor et al 2018
     """
-    att_df = meta_df.loc[:, ["area_gages2","elev_mean", "slope_mean", "p_seasonality", "frac_snow", 
-                             "aridity","high_prec_freq","high_prec_dur", "high_prec_timing",
-                             "low_prec_timing","soil_depth_pelletier", "soil_depth_statsgo",
-                             "sand_frac", "silt_frac", "clay_frac", "water_frac",
-                             "other_frac", "frac_forest", "lai_max", "gvf_max", 
-                             "dom_land_cover_frac", "dom_land_cover", "root_depth_50",
-                             "root_depth_99", "geol_1st_class", "glim_1st_class_frac",
-                             "carbonate_rocks_frac", "geol_porostiy", "geol_permeability"
+    att_df = meta_df.loc[:, ["area_gages2","elev_mean", "slope_mean", 
+                             "frac_snow", "aridity","high_prec_freq", "soil_depth_pelletier",
+                             "sand_frac", "clay_frac", "frac_forest", "lai_max", "gvf_max", 
+                             "geol_1st_class", "geol_porostiy", "geol_permeability"
                               ]]
     # Rename the columns
-    att_df.columns = ["Area", "Mean elevation", "Mean slope", "Seasonality of\nprecipitation",
-                      "Fraction of Precipitation\nfalling as snow", "Aridity", "Frequency of high\nprecipitation events",
-                      "Duration of high\nprecipitation events", "Timing of high\nprecipitation events",
-                      "Timing of low\nprecipitation events", "Depth to bedrock", "Soil depth",
-                      "Sand fraction", "Silt fraction", "Clay fraction", "Water fraction",
-                      "Other fraction", "Forest fraction", "LAI maximum", "Green vegetation\nfraction maximum",
-                      "Fraction of dominant\nland cover", "Dominant land cover", 
-                      "Root depth 50 %", "Root depth 99 %", "Dominant geological class",
-                      "Fraction of dominant\ngeological class", "Fraction of carbonate rocks",
+    att_df.columns = ["Area", "Mean elevation", "Mean slope", 
+                      "Fraction of precipitation\nfalling as snow", "Aridity", "Frequency of high\nprecipitation events",
+                      "Depth to bedrock", "Sand fraction", "Clay fraction",
+                      "Forest fraction", "LAI maximum", "Green vegetation\nfraction maximum",
+                      "Dominant geological class",
                       "Subsurface porosity", "Subsurface permeability"]
     # Select the 6 best signatures 
     sig_df = meta_df.loc[:, ["mean_ann_dis", "mean_win_dis", "hfd_mean", "q95", "runoff_ratio", "mean_sum_dis"]]

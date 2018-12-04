@@ -10,8 +10,6 @@ import pandas as pd
 import pca
 import read_attributes_signatures
 import scipy.stats as stats
-import os
-import sys
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 

@@ -102,11 +102,11 @@ def calculate_signatures(stream_df: pd.DataFrame, transform_to_mm=True,
             # skip years without data
             if stream_year.isnull().values.any():
                 continue
-            sum_year = stream_year.sum()
+            sum_year = stream_year.mean()
             yearly_dis.append(sum_year)
-            sum_winter = stream_year[stream_year.index.month.isin([11, 12, 1, 2, 3, 4])].sum()
+            sum_winter = stream_year[stream_year.index.month.isin([11, 12, 1, 2, 3, 4])].mean()
             winter_dis.append(sum_winter)
-            sum_summer = stream_year[stream_year.index.month.isin([5, 6, 7, 8, 9, 10])].sum()     
+            sum_summer = stream_year[stream_year.index.month.isin([5, 6, 7, 8, 9, 10])].mean()     
             summer_dis.append(sum_summer)     
         # Combine the signatures
         stream_sigs = pd.DataFrame({"mean_ann_dis":(sum(yearly_dis) / len(yearly_dis)),
