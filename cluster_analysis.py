@@ -44,6 +44,7 @@ def plot_all_regressions(combined_df, color_dict):
         ax.set_xlabel("Weigthed Coefficient of Determination", alpha=alpha)
         plt.setp(ax.get_yticklabels(), alpha=alpha)
         plt.setp(ax.get_xticklabels(), alpha=alpha)
+
         # Color the ylabels
         for tick_label in ax.axes.get_yticklabels():
             tick_text = tick_label.get_text()
@@ -71,6 +72,8 @@ def plot_all_attributes(combined_df):
                         palette="terrain", 
                         linewidth=1, saturation=0.5, ax=ax, whis="range")
         ax.set_xlabel("")
+        ax.set_xticklabels([str(i) for i in range(1,11)])
+
         ax.set_ylabel(ax.get_ylabel(), rotation=0, labelpad=70)
     
     axes[13].set_xlabel("Cluster")
@@ -80,7 +83,7 @@ def plot_all_attributes(combined_df):
     plt.savefig("cluster_atts.png", dpi=200, bbox_inches="tight")
     
     
-def plot_all_signatures(sig_plot_df, color_dict):
+def plot_all_signatures_boxplot(sig_plot_df, color_dict):
     """
     Plots the signatures seperated by the clusters
     """
@@ -94,6 +97,32 @@ def plot_all_signatures(sig_plot_df, color_dict):
                         palette="terrain", 
                         linewidth=1, saturation=0.5, ax=ax, whis="range")
         ax.set_xlabel("")
+        ax.set_xticklabels([str(i) for i in range(1,11)])
+        ax.set_ylabel(ax.get_ylabel(), rotation=0, labelpad=70)
+    
+    axes[5].set_xlabel("Cluster")
+                 
+    fig.set_size_inches(8.3, 11.7)
+    fig.tight_layout()
+    plt.savefig("cluster_sigs.png", dpi=200, bbox_inches="tight")
+    
+
+def plot_all_signatures_swarm(sig_plot_df, color_dict):
+    """
+    Plots the signatures seperated by the clusters
+    """
+    fig, axes = plt.subplots(nrows=6, ncols=1, sharex=True)
+    signatures = list(sig_plot_df.columns[:-1])
+    for i, sig in enumerate(signatures):
+
+        ax = axes[i-1]
+        # Get the five attributes with the lowest range
+        sns.swarmplot(y=sig_plot_df[sig], x=sig_plot_df["Cluster"],
+                        palette="gnuplot", size=1.5,
+                        ax=ax)
+        ax.set_xlabel("")
+        ax.yaxis.grid(color="grey")
+        ax.set_facecolor("white")
         ax.set_xticklabels([str(i) for i in range(1,11)])
         ax.set_ylabel(ax.get_ylabel(), rotation=0, labelpad=70)
     
@@ -140,7 +169,7 @@ if __name__ == "__main__":
     combined_df = pd.concat([pca_df, att_df, labels], axis=1)
     # Create the figures for the clusters
   #  plot_all_regressions(combined_df, color_dict)
-   # plot_all_attributes(combined_df)
+#    plot_all_attributes(combined_df)
     sig_plot_df = pd.concat([sig_df, combined_df["Cluster"]], axis=1)
-    plot_all_signatures(sig_plot_df, color_dict) 
-    
+#    plot_all_signatures(sig_plot_df, color_dict) 
+    plot_all_signatures_swarm(sig_plot_df, color_dict)
