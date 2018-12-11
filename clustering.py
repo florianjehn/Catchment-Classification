@@ -12,6 +12,9 @@ import numpy as np
 import pca
 import seaborn as sns
 import matplotlib.pyplot as plt
+import read_attributes_signatures
+import os
+import sys
 
 
 def create_cluster_labels(df: pd.DataFrame, num_groups):
@@ -39,6 +42,7 @@ def plot_clustering(pca_df_with_labels):
     # Basic set up
     alpha = 0.6
     fig = plt.Figure()
+    pca_df_with_labels["Cluster"] = pca_df_with_labels["Cluster"] + 1
 
     # Plotting
     sns.lmplot(x="PC 1",
@@ -46,9 +50,8 @@ def plot_clustering(pca_df_with_labels):
                data=pca_df_with_labels,
                hue="Cluster",
                fit_reg=False,
-               legend=False,
-               #palette="inferno",
-               scatter_kws={"s": 10})
+               palette="terrain",
+               scatter_kws={"s": 10, "alpha":1})
     ax = plt.gca()
 
     # Make plot nicer by removing the borders
@@ -70,10 +73,27 @@ def plot_clustering(pca_df_with_labels):
     plt.close()
 
 
+def save_clusters_with_loc(labels):
+    # Set the cwd to the directory of the file
+    file_loc = os.path.dirname(sys.argv[0])
+    os.chdir(file_loc)
+    # Read in the files
+    os.chdir(os.pardir + os.sep + "data" +  os.sep + "camels_attributes_v2.0")
+    # Topo
+    topo = pd.read_table("camels_topo.txt", sep=";", index_col=0)
+    labels_loc = pd.merge(topo[["gauge_lat", "gauge_lon"]], labels, left_index=True, right_index=True, how="inner")
+    os.chdir(file_loc)
+    labels_loc.to_csv("labels_loc.txt")
+    
+    
+    
+    
+
 if __name__ == "__main__":
     variance = 0.8
     pca_df = pca.pca_signatures(variance)
     labels = create_cluster_labels(pca_df, 10)
+    save_clusters_with_loc(labels)
     pca_df_with_labels = pd.concat([pca_df, labels], axis=1)
     print(pca_df_with_labels.describe())
     plot_clustering(pca_df_with_labels)
