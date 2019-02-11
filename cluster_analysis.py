@@ -56,7 +56,7 @@ def plot_all_regressions(combined_df, color_dict):
     plt.savefig("all_regressions.png", dpi=200, bbox_inches="tight")
         
 
-def plot_all_attributes(combined_df):
+def plot_all_attributes_boxplot(combined_df):
     """
     Plots the 5 catchment attributes with the lowest range"
     """   
@@ -118,7 +118,7 @@ def plot_all_signatures_swarm(sig_plot_df, color_dict):
         ax = axes[i-1]
         # Get the five attributes with the lowest range
         sns.swarmplot(y=sig_plot_df[sig], x=sig_plot_df["Cluster"],
-                        palette="gnuplot", size=1.5,
+                        palette="gnuplot", size=1,
                         ax=ax)
         ax.set_xlabel("")
         ax.yaxis.grid(color="grey")
@@ -128,28 +128,83 @@ def plot_all_signatures_swarm(sig_plot_df, color_dict):
     
     axes[5].set_xlabel("Cluster")
                  
-    fig.set_size_inches(8.3, 11.7)
+    fig.set_size_inches(10, 11.7)
     fig.tight_layout()
     plt.savefig("cluster_sigs.png", dpi=200, bbox_inches="tight")
+
+def plot_all_attributes_swarm(combined_df):
+    """
+    Plots the 5 catchment attributes with the lowest range"
+    """   
+    alpha = 0.6
+    fig, axes = plt.subplots(nrows=14, ncols=1, sharex=True)
+    attributes = list(combined_df.columns[2:-1])
+    attributes.remove("Dominant geological class")
+    for i, att in enumerate(attributes):
+
+        ax = axes[i-1]
+        # Get the five attributes with the lowest range
+        sns.swarmplot(y=combined_df[att], x=combined_df["Cluster"],
+                        palette="gnuplot", size=1,
+                        ax=ax)
+        ax.set_xlabel("")
+        ax.yaxis.grid(color="grey")
+        ax.set_facecolor("white")
+        ax.set_xticklabels([str(i) for i in range(1,11)])
+        ax.set_ylabel(ax.get_ylabel(), rotation=0, labelpad=70)
     
-         
-def calc_coefficient_of_variation(df, num):
+    
+    axes[13].set_xlabel("Cluster")
+                 
+    fig.set_size_inches(10, 11.7)
+    fig.tight_layout()
+    plt.savefig("cluster_atts.png", dpi=200, bbox_inches="tight")
+
+def calc_coefficient_of_variation(att_df_with_labels):
     """
-    Finds the num columns with the lowest range in a df
+    Finds coefficient of variation for all combinations of Cluster and Attribute
     """
+    # Transform the categories
+    att_df_with_labels = linear_regression.cat_to_num(att_df_with_labels)
     cv = pd.DataFrame()
-    cv["Attributes"] = df.columns[2:]
+    # Exclude the PCA
+    cv["Attributes"] = att_df_with_labels.columns[:-1]
     cv = cv.set_index("Attributes")
-    cv["CV"] = None
-    for col in df.columns:
-        if df[col].dtype != float:
-            continue
-        std = df[col].std()
-        mean = abs(df[col].mean())
-        cv_col = std / mean if mean > 0 else 0
-        cv.loc[col,: "CV"] = cv_col 
-        
-    return cv.dropna().sort_values(by="CV", ascending=False)
+    #cv.columns = combined_df["Cluster"]
+    for cluster, cluster_df in att_df_with_labels.groupby("Cluster"):
+        cv[cluster] = None
+        # Remove the cluster column
+        del(cluster_df["Cluster"])
+        for att in cluster_df.columns:
+            # Transform the categories
+            # Calculate the coefficient of variation for the current combination of cluster and attribute
+            std = cluster_df[att].std()
+            mean = abs(cluster_df[att].mean())
+            cv_ = std / mean 
+            # Also consider the size of the cluster
+            # see https://en.wikipedia.org/wiki/Coefficient_of_variation
+            cv_ = cv_ * (1 + 1/(4*cluster_df.shape[0]))
+            cv.loc[att, cluster] = cv_
+    
+    return cv
+    
+
+def calc_scaled_cv(cv_df):
+    """
+    Scales the coefficient of variation of the single attributes by the mean coefficient
+    of variation of the same attribute. This allows to find the attribute of the
+    cluster that has the lowest variation for the cluster im relationship to the
+    variation of the variable in the whole dataset
+    """
+    cv_df_scaled = cv_df.copy(deep=True)
+    # Get the mean cv for the attributes
+    means = cv_df_scaled.mean(axis=1)
+    # Calc
+    for cluster in cv_df_scaled.columns:
+        cv_df_scaled[cluster] /= means
+    return cv_df_scaled
+    
+    
 
 if __name__ == "__main__":
     # Dictionary for the broad categories
@@ -169,7 +224,11 @@ if __name__ == "__main__":
     combined_df = pd.concat([pca_df, att_df, labels], axis=1)
     # Create the figures for the clusters
   #  plot_all_regressions(combined_df, color_dict)
-#    plot_all_attributes(combined_df)
-    sig_plot_df = pd.concat([sig_df, combined_df["Cluster"]], axis=1)
+#    plot_all_attributes_swarm(combined_df)
+ #   sig_plot_df = pd.concat([sig_df, combined_df["Cluster"]], axis=1)
 #    plot_all_signatures(sig_plot_df, color_dict) 
-    plot_all_signatures_swarm(sig_plot_df, color_dict)
+ #   plot_all_signatures_swarm(sig_plot_df, color_dict)
+    cv_att = calc_coefficient_of_variation(pd.concat([att_df, labels], axis=1))
+    cv_att_scaled = calc_scaled_cv(cv_att)
+    cv_sig = calc_coefficient_of_variation(pd.concat([sig_df, labels], axis=1))
+    cv_sig_scaled = calc_scaled_cv(cv_sig)
