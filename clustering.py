@@ -50,8 +50,8 @@ def plot_clustering(pca_df_with_labels):
                data=pca_df_with_labels,
                hue="Cluster",
                fit_reg=False,
-               palette="terrain",
-               scatter_kws={"s": 10, "alpha":1})
+               palette="gist_earth",
+               scatter_kws={"s": 20, "alpha":0.8})
     ax = plt.gca()
 
     # Make plot nicer by removing the borders
@@ -60,7 +60,6 @@ def plot_clustering(pca_df_with_labels):
         spine.set_visible(False)
 
     # Add correct descriptions
-    ax.set_title("Cluster n = 10", alpha=alpha)
     ax.set_ylabel("PC 2", alpha=alpha)
     ax.set_xlabel("PC 1", alpha=alpha)
     ax.grid(color="grey", alpha=alpha)

@@ -11,6 +11,7 @@ import pca
 import read_attributes_signatures
 import pandas as pd
 import seaborn as sns
+import matplotlib.patches as mpatches
 
 
 def calc_poly_linear_regression(independent, dependent):
@@ -76,19 +77,37 @@ def weight_regression_by_var(r2_df, var_percents):
     return r2_df["r2_weighted"]
     
 
-def plot_regressions(r2_df_weighted, describer, color_dict):
+def plot_regressions(r2_df_weighted, describer, color_dict, cols_classes):
     """
     Plots the weighted coefficient of determination
     """
-    r2_df_weighted.sort_values().plot(kind="barh", color="#4C72B0")
+    alpha=0.5
+    ax = plt.gca()
+    r2_df_weighted.sort_values().plot(ax=ax, kind="barh", color="#4C72B0",zorder=3)
     fig = plt.gcf()
     fig.tight_layout()
-    fig.set_size_inches(8.3, 11.7)
+    fig.set_size_inches(10, 11.7)
     plt.xlim(0,1)
-    ax = plt.gca()
     for tick_label in ax.axes.get_yticklabels():
         tick_text = tick_label.get_text()
+        tick_label.set_fontsize(14)
         tick_label.set_color(color_dict[tick_text])
+    ax.xaxis.grid(color="grey", zorder=0)
+    ax.set_facecolor("white")
+    plt.xlabel("Weigthed Coefficient of Determination", alpha=alpha, fontsize=14)
+    plt.ylabel("Catchment Attributes", alpha=alpha, fontsize=14)
+    plt.setp(ax.get_xticklabels(), alpha=alpha)
+    # Remove the borders
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+        
+    # Create the legend
+    handles = []
+    for att, color in cols_classes.items():
+        handles.append(mpatches.Patch(color=color, label=att))
+    legend = ax.legend(handles=handles, frameon=True, fancybox=True, facecolor="white", edgecolor="grey",  fontsize=14)
+    for text in legend.get_texts():
+        text.set_color("grey")
     plt.savefig("r2_scores_ " + describer + ".png")
     
 
@@ -100,6 +119,12 @@ if __name__ == "__main__":
                   "Forest fraction": "forestgreen", "LAI maximum": "forestgreen", "Green vegetation\nfraction maximum": "forestgreen",
                   "Dominant geological class": "grey", "Subsurface porosity": "grey", "Subsurface permeability": "grey"}
     
+    cols_classes = {"Climate": "royalblue", 
+                    "Geology": "grey", 
+                    "Soil": "#D6BD39", 
+                    "Topography": "#D64139",
+                    "Vegetation": "forestgreen"}
+    
     variance = 0.8
     pca_df = pca.pca_signatures(variance)
     meta_df = read_attributes_signatures.read_meta()
@@ -108,5 +133,5 @@ if __name__ == "__main__":
     r2_df = calc_all_linear_regressions(pca_df, att_df_encode)
     var_percents = [0.74567053, 0.18828154]
     r2_df_weighted = weight_regression_by_var(r2_df, var_percents)
-    plot_regressions(r2_df_weighted, "all", color_dict)
+    plot_regressions(r2_df_weighted, "all", color_dict, cols_classes)
     
