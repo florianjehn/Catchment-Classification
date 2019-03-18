@@ -35,7 +35,7 @@ def create_cluster_labels(df: pd.DataFrame, num_groups):
     return labels
 
 
-def plot_clustering(pca_df_with_labels):
+def biplot(pca_df_with_labels,pca_object):
     """
     Plots the clustered PCA
     """
@@ -53,6 +53,21 @@ def plot_clustering(pca_df_with_labels):
                palette="gist_earth",
                scatter_kws={"s": 20, "alpha":0.8})
     ax = plt.gca()
+    # Names of the factors
+    factors = ['Mean annual discharge', 'Mean winter discharge', 'Mean half-flow date',
+       'Q95 (high flow)', 'Runoff ratio', 'Mean summer discharge']
+    # using scaling factors to make the arrows
+    arrow_size, text_pos = 7.0, 8.0,
+    # Add the arrows
+    for i, v in enumerate(pca_object.components_.T):
+        ax.arrow(0, 0, arrow_size*v[0], arrow_size*v[1], head_width=0.2, head_length=0.2, linewidth=1.5, color="grey")
+        # Fix the overlapping text
+        if factors[i] == "Mean annual discharge":
+            ax.text(v[0]*text_pos, v[1]*text_pos + 0.2, factors[i], color='black', ha='center', va='center', fontsize=9)
+        elif factors[i] == "Q95 (high flow)":
+            ax.text(v[0]*text_pos, v[1]*text_pos -0.2, factors[i], color='black', ha='center', va='center', fontsize=9)
+        else:
+            ax.text(v[0]*text_pos, v[1]*text_pos, factors[i], color='black', ha='center', va='center', fontsize=9)
 
     # Make plot nicer by removing the borders
     ax.set_facecolor("white")
@@ -65,11 +80,11 @@ def plot_clustering(pca_df_with_labels):
     ax.grid(color="grey", alpha=alpha)
     plt.setp(ax.get_yticklabels(), alpha=alpha)
     plt.setp(ax.get_xticklabels(), alpha=alpha)
+    plt.ylim(-2.5, 7)
 
     # Save the plot
     fig.tight_layout()
     plt.savefig("clusters.png",  bbox_inches="tight")
-    plt.close()
 
 
 def save_clusters_with_loc(labels):
@@ -95,5 +110,6 @@ if __name__ == "__main__":
     save_clusters_with_loc(labels)
     pca_df_with_labels = pd.concat([pca_df, labels], axis=1)
     print(pca_df_with_labels.describe())
-    plot_clustering(pca_df_with_labels)
+    pca_object = pca.pca_signatures(0.80, return_pca=True)
+    biplot(pca_df_with_labels, pca_object)
     

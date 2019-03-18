@@ -11,13 +11,14 @@ from sklearn.preprocessing import StandardScaler
 import numpy as np
 
 
-def pca_signatures(variance):
+def pca_signatures(variance, return_pca=False):
     """
     Does a principal component analysis on the signature dataframe so that the 
     number of principal components accounts for at least 80 % of the total 
     variance of the original variables
     
     :param variance: amount of variance that is to be explained
+    :param return_pca: allows returning of the pca object
     """
     # Get the data
     meta_df = read_attributes_signatures.read_meta()
@@ -35,7 +36,10 @@ def pca_signatures(variance):
     principal_df = pd.DataFrame(data=principal_components, index=sig_df.index)
     # Give the columns more meaningful names
     principal_df.columns = ["PC " + str(i) for i in range(1, len(principal_df.columns) + 1)]
-    return principal_df
+    if return_pca:
+        return pca
+    else:
+        return principal_df
 
 
 if __name__ == "__main__":
