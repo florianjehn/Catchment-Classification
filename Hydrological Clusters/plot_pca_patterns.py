@@ -59,6 +59,7 @@ def plot_pca(plotting_df: pd.DataFrame, describers: list):
         ax.grid(color="grey", alpha=alpha)
         plt.setp(ax.get_yticklabels(), alpha=alpha)
         plt.setp(ax.get_xticklabels(), alpha=alpha)
+        ax.tick_params(axis=u'both', which=u'both',length=0)
 
         # Save the plot
         fig.tight_layout()

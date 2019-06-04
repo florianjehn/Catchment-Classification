@@ -100,6 +100,8 @@ def plot_regressions(r2_df_weighted, describer, color_dict, cols_classes):
     # Remove the borders
     for spine in ax.spines.values():
         spine.set_visible(False)
+    ax.tick_params(axis=u'both', which=u'both',length=0)
+
         
     # Create the legend
     handles = []

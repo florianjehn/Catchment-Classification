@@ -39,19 +39,21 @@ def biplot(pca_df_with_labels,pca_object):
     """
     Plots the clustered PCA
     """
+    colors= ["#e6194B", "#f58231", "#fffac8", "#bfef45",  "#3cb44b", 
+             "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"]
     # Basic set up
     alpha = 0.6
     fig = plt.Figure()
     pca_df_with_labels["Cluster"] = pca_df_with_labels["Cluster"] + 1
 
     # Plotting
-    sns.lmplot(x="PC 1",
+    plot = sns.lmplot(x="PC 1",
                y="PC 2",
                data=pca_df_with_labels,
                hue="Cluster",
                fit_reg=False,
-               palette="gist_earth",
-               scatter_kws={"s": 20, "alpha":0.8})
+               palette=colors,#"gist_earth",
+               scatter_kws={"s": 30, "alpha":1, "edgecolor":"black", "linewidth":0.3, "zorder":2})
     ax = plt.gca()
     # Names of the factors
     factors = ['Mean annual discharge', 'Mean winter discharge', 'Mean half-flow date',
@@ -60,14 +62,14 @@ def biplot(pca_df_with_labels,pca_object):
     arrow_size, text_pos = 7.0, 8.0,
     # Add the arrows
     for i, v in enumerate(pca_object.components_.T):
-        ax.arrow(0, 0, arrow_size*v[0], arrow_size*v[1], head_width=0.2, head_length=0.2, linewidth=1.5, color="grey")
+        ax.arrow(0, 0, arrow_size*v[0], arrow_size*v[1], head_width=0.2, head_length=0.2, linewidth=1.5, color="grey", zorder=3)
         # Fix the overlapping text
         if factors[i] == "Mean annual discharge":
-            ax.text(v[0]*text_pos, v[1]*text_pos + 0.2, factors[i], color='black', ha='center', va='center', fontsize=9)
+            ax.text(v[0]*text_pos, v[1]*text_pos + 0.2, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4)
         elif factors[i] == "Q95 (high flow)":
-            ax.text(v[0]*text_pos, v[1]*text_pos -0.2, factors[i], color='black', ha='center', va='center', fontsize=9)
+            ax.text(v[0]*text_pos, v[1]*text_pos -0.2, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4)
         else:
-            ax.text(v[0]*text_pos, v[1]*text_pos, factors[i], color='black', ha='center', va='center', fontsize=9)
+            ax.text(v[0]*text_pos, v[1]*text_pos, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4)
 
     # Make plot nicer by removing the borders
     ax.set_facecolor("white")
@@ -77,10 +79,16 @@ def biplot(pca_df_with_labels,pca_object):
     # Add correct descriptions
     ax.set_ylabel("PC 2", alpha=alpha)
     ax.set_xlabel("PC 1", alpha=alpha)
-    ax.grid(color="grey", alpha=alpha)
+    ax.grid(color="grey", alpha=alpha, zorder=4)
     plt.setp(ax.get_yticklabels(), alpha=alpha)
     plt.setp(ax.get_xticklabels(), alpha=alpha)
     plt.ylim(-2.5, 7)
+    ax.tick_params(axis=u'both', which=u'both',length=0)
+    legend = plot._legend
+    for text in legend.get_texts():
+        text.set_color("grey")
+    legend.set_title("Catchment\n   Cluster")
+    legend.get_title().set_color("grey")
 
     # Save the plot
     fig.tight_layout()

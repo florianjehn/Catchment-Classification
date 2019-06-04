@@ -7,13 +7,12 @@ Created on Wed Nov 28 14:52:40 2018
 
 import pca
 import clustering
-import linear_regression
 import read_attributes_signatures
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import regression
 import matplotlib.patches as mpatches
-import math
 
 
 def plot_all_regressions(combined_df, color_dict):
@@ -30,10 +29,10 @@ def plot_all_regressions(combined_df, color_dict):
         attributes = cluster.columns[2:-1]
         att_df_cluster = cluster[attributes]
         # Encode the attributes
-        att_df_cluster = linear_regression.cat_to_num(att_df_cluster)
+        att_df_cluster = regression.cat_to_num(att_df_cluster)
         # Calculate the linear regressions
-        r2_df = linear_regression.calc_all_linear_regressions(pca_df_cluster, att_df_cluster)
-        r2_df_weighted = linear_regression.weight_regression_by_var(r2_df, [0.74567053, 0.18828154])
+        r2_df = regression.calc_all_linear_regressions(pca_df_cluster, att_df_cluster)
+        r2_df_weighted = regression.weight_regression_by_var(r2_df, [0.74567053, 0.18828154])
         # only select the 5 most important characteristics
         r2_df_weighted = r2_df_weighted.sort_values(ascending=False).head(5)
         # plot it
@@ -53,6 +52,8 @@ def plot_all_regressions(combined_df, color_dict):
         # Remove the borders
         for spine in ax.spines.values():
             spine.set_visible(False)
+        ax.tick_params(axis=u'both', which=u'both',length=0)
+
     
     ax = axes[4,1]
     # Create the legend
@@ -82,12 +83,15 @@ def plot_all_signatures_swarm(sig_plot_df, color_dict):
     for i, sig in enumerate(sorted(signatures)):
 
         ax = axes[i-1]
+        ax.yaxis.grid(color="grey", zorder=0)
+        ax.set_axisbelow(True)
+
         # Get the five attributes with the lowest range
-        sns.swarmplot(y=sig_plot_df[sig], x=sig_plot_df["Cluster"],
-                        palette="gist_earth", size=2,
-                        ax=ax)
+        ax = sns.violinplot(y=sig_plot_df[sig], x=sig_plot_df["Cluster"], zorder=10, edgecolor="gray", linewidth=0.2,
+                        palette=["#e6194B", "#f58231", "#fffac8", "#bfef45",  "#3cb44b", 
+             "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"], cut=True, inner="point",
+                        ax=ax , scale="width")
         ax.set_xlabel("")
-        ax.yaxis.grid(color="grey")
         ax.set_facecolor("white")
         ax.set_xticklabels([str(i) for i in range(1,11)],alpha=alpha)
         ax.set_ylabel(r""+ax.get_ylabel()+"\n"+units[sig], rotation=0, labelpad=70,alpha=alpha)
@@ -96,6 +100,8 @@ def plot_all_signatures_swarm(sig_plot_df, color_dict):
         # Remove the borders
         for spine in ax.spines.values():
             spine.set_visible(False)
+        ax.tick_params(axis=u'both', which=u'both',length=0)
+
             
     axes[5].set_xlabel("Cluster",alpha=alpha)
                  
@@ -129,11 +135,14 @@ def plot_all_attributes_swarm(combined_df, color_dict, cols_classes):
 
         ax = axes[i]
         # Get the five attributes with the lowest range
-        sns.swarmplot(y=combined_df[att], x=combined_df["Cluster"],
-                        palette="gist_earth", size=2,
+        sns.violinplot(y=combined_df[att], x=combined_df["Cluster"], edgecolor="gray", linewidth=0.2,
+                        palette=["#e6194B", "#f58231", "#fffac8", "#bfef45",  "#3cb44b", 
+             "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"], size=2, cut=True, inner="point", scale="width",
                         ax=ax,alpha=1)
         ax.set_xlabel("")
         ax.yaxis.grid(color="grey")
+        ax.set_axisbelow(True)
+
         ax.set_facecolor("white")
         ax.set_xticklabels([str(i) for i in range(1,11)], alpha=alpha)
         ax.set_ylabel(r""+att + "\n"+units[att], rotation=0 ,va='center',labelpad=pads[att], color=color_dict[att])
@@ -142,6 +151,8 @@ def plot_all_attributes_swarm(combined_df, color_dict, cols_classes):
                 # Remove the borders
         for spine in ax.spines.values():
             spine.set_visible(False)
+        ax.tick_params(axis=u'both', which=u'both',length=0)
+
         
     # Create the legend
     handles = []
@@ -162,7 +173,7 @@ def calc_coefficient_of_variation(att_df_with_labels):
     Finds coefficient of variation for all combinations of Cluster and Attribute
     """
     # Transform the categories
-    att_df_with_labels = linear_regression.cat_to_num(att_df_with_labels)
+    att_df_with_labels = regression.cat_to_num(att_df_with_labels)
     cv = pd.DataFrame()
     # Exclude the PCA
     cv["Attributes"] = att_df_with_labels.columns[:-1]
@@ -226,10 +237,9 @@ if __name__ == "__main__":
     labels = clustering.create_cluster_labels(pca_df, 10)
     combined_df = pd.concat([pca_df, att_df, labels], axis=1)
     # Create the figures for the clusters
-  #  plot_all_regressions(combined_df, color_dict)
+   # plot_all_regressions(combined_df, color_dict)
     plot_all_attributes_swarm(combined_df,color_dict, cols_classes)
     sig_plot_df = pd.concat([sig_df, combined_df["Cluster"]], axis=1)
-#    plot_all_signatures(sig_plot_df, color_dict) 
     plot_all_signatures_swarm(sig_plot_df, color_dict)
 #    cv_att = calc_coefficient_of_variation(pd.concat([att_df, labels], axis=1))
 #    cv_att_scaled = calc_scaled_cv(cv_att)
