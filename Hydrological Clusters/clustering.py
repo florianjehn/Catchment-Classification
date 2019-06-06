@@ -15,9 +15,11 @@ import matplotlib.pyplot as plt
 import read_attributes_signatures
 import os
 import sys
+import scipy
 
 
-def create_cluster_labels(df: pd.DataFrame, num_groups):
+
+def create_cluster_labels(df: pd.DataFrame, num_groups, return_score=False):
     """
     Clusters a dataframe, adds the cluster labels to it and returns it
     """
@@ -31,8 +33,10 @@ def create_cluster_labels(df: pd.DataFrame, num_groups):
     labels = pd.DataFrame(list(agg_clust.labels_))
     labels.index = df.index
     labels.columns = ["Cluster"]
-    
-    return labels
+    if return_score:
+        return agg_clust.connectivity
+    else:
+        return labels
 
 
 def biplot(pca_df_with_labels,pca_object):
@@ -108,16 +112,27 @@ def save_clusters_with_loc(labels):
     labels_loc.to_csv("labels_loc.txt")
     
     
+def elbow(min_clusters, max_clusters, df):
+    """Creates an elbow plot for a dataframe to determine the number
+    of clusters"""
+    score_dict = {}
+    for num_clusters in range(min_clusters, max_clusters+1):
+        labels = create_cluster_labels(df, num_clusters)
+        score_dict[num_clusters] = calinski_harabaz_score(df, labels)
+    metrics = pd.DataFrame.from_dict(score_dict, orient="index")
+    metrics.plot()
+        
     
     
 
 if __name__ == "__main__":
     variance = 0.8
     pca_df = pca.pca_signatures(variance)
+    metrics = elbow(5, 20, pca_df)
     labels = create_cluster_labels(pca_df, 10)
-    save_clusters_with_loc(labels)
+#    save_clusters_with_loc(labels)
     pca_df_with_labels = pd.concat([pca_df, labels], axis=1)
-    print(pca_df_with_labels.describe())
-    pca_object = pca.pca_signatures(0.80, return_pca=True)
-    biplot(pca_df_with_labels, pca_object)
+#    print(pca_df_with_labels.describe())
+#    pca_object = pca.pca_signatures(0.80, return_pca=True)
+#    biplot(pca_df_with_labels, pca_object)
     
