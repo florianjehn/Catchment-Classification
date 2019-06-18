@@ -24,7 +24,9 @@ camels_clusters["nearest"] = camels_clusters["nearest"]/1000
 #camels_clusters.groupby("gauge_cluster").median()["nearest"].plot(kind="bar")
 #print(camels_clusters.groupby("gauge_cluster").median()["nearest"])
 #camels_clusters.groupby("gauge_cluster")["nearest"].plot(kind="box")
-ax = sns.swarmplot(x=camels_clusters["gauge_cluster"], y=camels_clusters["nearest"], palette="gist_earth", size=3)
+ax = sns.violinplot(x=camels_clusters["gauge_cluster"], y=camels_clusters["nearest"],zorder=10, edgecolor="gray", linewidth=0.2,
+                        palette=["#e6194B", "#f58231", "#fffac8", "#bfef45",  "#3cb44b", 
+             "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"], cut=True, inner="point", scale="width")
 ax.set_ylabel("Distance [km]", alpha=0.6)
 ax.set_xlabel("Catchment Cluster", alpha=0.6)
 # Make it nice+
@@ -56,10 +58,10 @@ plt.savefig("distances.png", bbox_inches="tight", dpi=300)
 
 plt.close()
 # Seperate it by west and east
-fig, axes = plt.subplots(ncols=2, sharex=True)
+fig, axes = plt.subplots(ncols=2, sharex=True, sharey=True)
 axes = axes.flatten()
-ax1 = sns.boxplot(y=camels_clusters.loc[camels_clusters["gauge_lon"] < -100, "nearest"], orient="v", ax=axes[0])
-ax2 = sns.boxplot(y=camels_clusters.loc[camels_clusters["gauge_lon"] > -100, "nearest"], orient="v", ax=axes[1])
+ax1 = sns.violinplot(y=camels_clusters.loc[camels_clusters["gauge_lon"] < -100, "nearest"], orient="v", ax=axes[0])
+ax2 = sns.violinplot(y=camels_clusters.loc[camels_clusters["gauge_lon"] > -100, "nearest"], orient="v", ax=axes[1])
 
 
 

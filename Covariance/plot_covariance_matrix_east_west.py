@@ -26,12 +26,10 @@ meta_df = read_attributes_signatures.read_meta()
 att_df, sig_df = read_attributes_signatures.seperate_attributes_signatures(meta_df)
 att_df['Dominant geological class'] = pd.factorize(att_df['Dominant geological class'])[0]
 
-## Plot for whole dataset
-#corr = att_df.corr()
+# Plot for whole dataset
+# all_corr = att_df.corr()
 #mask = np.zeros_like(corr)
 #mask[np.triu_indices_from(mask)] = True
-#sns.heatmap(att_df.corr(), cmap="plasma", square=True,  mask=mask)
-#plt.close()
 
 # Plot seperated by ost and west
 att_df["gauge_lon"] = meta_df["gauge_lon"]
@@ -41,14 +39,16 @@ del(west["gauge_lon"])
 del(east["gauge_lon"])
 
 fig, axes = plt.subplots(nrows=3)
+axes = axes.flatten()
 ax1 = axes[0]
 ax2 = axes[1]
+ax3 = axes[2]
 # Plot Western US
-sns.heatmap(west.corr(), ax=ax1, cmap="coolwarm", square=True, linewidth=0.5, yticklabels=True, cbar=False, annot=True)
+sns.heatmap(west.corr(), ax=ax1, cmap="coolwarm", square=True, linewidth=0.5, yticklabels=True, cbar=False, annot=round(west.corr(),1))
 ax1.xaxis.tick_top()
 plt.setp( ax1.xaxis.get_majorticklabels(), rotation=90)
-ax1.text(1.01, 0.5, "Western US",
-        rotation=270, size=16, weight='bold',
+ax1.text(1.01, 0.5, "a) Western US",
+        rotation=270, size=12, weight='bold',
         ha='left', va='center', transform=ax1.transAxes, alpha=alpha)
 # Color the ylabels
 for tick_label in ax1.axes.get_yticklabels():
@@ -62,11 +62,10 @@ for i in range(0, 16, 3):
     for j in range(0,16,3):        
         ax1.add_patch(Rectangle((i, j), 3, 3, fill=False, edgecolor='black', lw=1))
 # Plot Eastern US
-sns.heatmap(east.corr(), ax=ax2, cmap="coolwarm", square=True, linewidth=0.5,yticklabels=True, cbar=False, annot=True, xticklabels=False)
-ax2.text(1.01, -0.56, "Eastern US",
-        rotation=270, size=16, weight='bold',
+sns.heatmap(east.corr(), ax=ax2, cmap="coolwarm", square=True, linewidth=0.5,yticklabels=True, cbar=False, annot=round(east.corr(),1), xticklabels=False)
+ax2.text(1.01, -0.5, "b) Eastern US",
+        rotation=270, size=12, weight='bold',
         ha='left', va='center', transform=ax1.transAxes, alpha=alpha)
-fig.set_size_inches(30,30)
 # Add rectangles to group attributes
 for i in range(0, 16, 3):
     for j in range(0,16,3):        
@@ -83,9 +82,9 @@ for column in west.corr():
     diff_df[column] = abs(west.corr()[column] - east.corr()[column])
 
 ax3=axes[2]
-sns.heatmap(diff_df, cmap="Blues", annot=True, cbar=False, ax=ax3, linewidth=0.5,square=True)
-ax3.text(1.01, -1.64, "Differences Eastern/Western US",
-        rotation=270, size=16, weight='bold',
+sns.heatmap(diff_df, cmap="Blues", annot=round(diff_df,1),yticklabels=True, cbar=False, ax=ax3, linewidth=0.5,square=True)
+ax3.text(1.01, -1.51, "c) Differences between East and West",
+        rotation=270, size=12, weight='bold',
         ha='left', va='center', transform=ax1.transAxes, alpha=alpha)
 # Add rectangles to group attributes
 for i in range(0, 16, 3):
@@ -114,6 +113,8 @@ legend = ax3.legend(handles=handles,bbox_to_anchor=(-0.02, -0.02), frameon=True,
 for text in legend.get_texts():
     text.set_color("grey")
 legend.get_title().set_color("grey")
+fig.set_size_inches(20,20)
 
 fig.tight_layout()
-plt.savefig("covariability.png", dpi=200, bbox_inches="tight")
+fig.subplots_adjust(hspace=0.01)
+plt.savefig("covariability.png", dpi=250, bbox_inches="tight")
