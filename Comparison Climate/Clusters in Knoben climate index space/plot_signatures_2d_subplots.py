@@ -9,10 +9,10 @@ import pandas as pd
 import seaborn
 import matplotlib.pyplot as plt
 import numpy as np
-import os
+
 
 def read_knoben():
-    return pd.read_csv('signaturesinclimatespace.csv', index_col=0)
+    return pd.read_csv("knoben_climate_jehn_signatures.csv", index_col=0)
 
 def plot_signatures_2d(knoben):
     alpha=0.6
@@ -36,7 +36,7 @@ def plot_signatures_2d(knoben):
                 ax.set_xlabel(name_dict[climate_index_x], alpha=alpha, fontsize=8)
                 
                 i += 1
-                scatter = ax.scatter(knoben[climate_index_x], knoben[climate_index_y],   c=np.log(list(knoben[signature])), cmap="plasma", alpha=1, zorder=4, edgecolor="black", linewidth=0.3)
+                scatter = ax.scatter(knoben[climate_index_x], knoben[climate_index_y],   c=np.log(list(knoben[signature])), cmap="plasma", alpha=0.7, zorder=4, edgecolor="black", linewidth=0.3)
                 cbar = fig.colorbar(scatter, ax=ax)
                 cbar.ax.set_ylabel("log " + units[signature], alpha=alpha)
                 plt.setp(cbar.ax.get_yticklabels(), alpha=alpha)
@@ -47,7 +47,7 @@ def plot_signatures_2d(knoben):
                 ax.grid(True, color="lightgrey", zorder=0)
                 for spine in ax.spines.values():
                     spine.set_visible(False)
-    fig.set_size_inches(13,23)
+    fig.set_size_inches(13,13)
     fig.tight_layout()
     plt.savefig("signatures_2d.png", dpi=300)
     
