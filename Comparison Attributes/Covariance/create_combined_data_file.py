@@ -159,10 +159,10 @@ def finish_and_save(to_del):
     meta_df.to_csv("meta.csv", sep=";", encoding="utf-8",
               quoting=csv.QUOTE_MINIMAL)
 
-finish_and_save(["lai_diff", "gvf_diff", "soil_porosity", "soil_conductivity",
-                 "geol_2nd_class", "glim_2nd_class_frac", "q_mean", "stream_elas",
-                 "slope_fdc", "baseflow_index", "q5", "high_q_freq", "high_q_dur",
-                 "low_q_freq", "low_q_dur", "zero_q_freq"])
+#finish_and_save(["lai_diff", "gvf_diff", "soil_porosity", "soil_conductivity",
+#                 "geol_2nd_class", "glim_2nd_class_frac", "q_mean", "stream_elas",
+#                 "slope_fdc", "baseflow_index", "q5", "high_q_freq", "high_q_dur",
+#                 "low_q_freq", "low_q_dur", "zero_q_freq"])
     
     
 

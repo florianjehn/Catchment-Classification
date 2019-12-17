@@ -87,10 +87,10 @@ def plot_all_signatures_swarm(sig_plot_df, color_dict):
         ax.set_axisbelow(True)
 
         # Get the five attributes with the lowest range
-        ax = sns.violinplot(y=sig_plot_df[sig], x=sig_plot_df["Cluster"], zorder=10, edgecolor="gray", linewidth=0.2,
+        ax = sns.boxplot(y=sig_plot_df[sig], x=sig_plot_df["Cluster"], zorder=10, 
                         palette=["#e6194B", "#f58231", "#fffac8", "#bfef45",  "#3cb44b", 
-             "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"], cut=True, inner="point",
-                        ax=ax , scale="width")
+             "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"],  whis=100, width=0.9,
+                        ax=ax)
         ax.set_xlabel("")
         ax.set_facecolor("white")
         ax.set_xticklabels([str(i) for i in range(1,11)],alpha=alpha)
@@ -105,8 +105,9 @@ def plot_all_signatures_swarm(sig_plot_df, color_dict):
             
     axes[5].set_xlabel("Cluster",alpha=alpha)
                  
-    fig.set_size_inches(10, 11.7)
-    fig.tight_layout()
+    fig.set_size_inches(6, 30)
+    fig.subplots_adjust(hspace=0)
+
     plt.savefig("cluster_sigs.png", dpi=200, bbox_inches="tight")
 
 def plot_all_attributes_swarm(combined_df, color_dict, cols_classes):
@@ -114,19 +115,19 @@ def plot_all_attributes_swarm(combined_df, color_dict, cols_classes):
     Plots the 5 catchment attributes with the lowest range"
     """   
     alpha = 0.6
-    fig, axes = plt.subplots(nrows=14, ncols=1, sharex=True)
-    attributes = ["Aridity", 'Fraction of precipitation\nfalling as snow', 'Frequency of high\nprecipitation events',
+    fig, axes = plt.subplots(nrows=15, ncols=1, sharex=True)
+    attributes = ["Aridity", 'Fraction of precipitation\nfalling as snow', 'Frequency of high\nprecipitation events', "Precipitation seasonality",
                   'Subsurface permeability', 'Subsurface porosity',
                  'Clay fraction','Depth to bedrock', 'Sand fraction',
                  'Area', 'Mean elevation', 'Mean slope',
                  'Forest fraction','Green vegetation\nfraction maximum','LAI maximum']
-    units = {"Aridity": "[-]", 'Fraction of precipitation\nfalling as snow': "[-]", 'Frequency of high\nprecipitation events':"[days $yr^{-1}$]",
+    units = {"Aridity": "[-]", 'Fraction of precipitation\nfalling as snow': "[-]", 'Frequency of high\nprecipitation events':"[days $yr^{-1}$]", "Precipitation seasonality":"[-]",
              'Subsurface permeability': "[cm $h^{-1}$]", 'Subsurface porosity':"[-]",
                  'Clay fraction':"[%]",'Depth to bedrock':"[m]", 'Sand fraction':"[%]",
                  'Area':"[$km^2$]", 'Mean elevation':"[m]", 'Mean slope':"[m $km^{-1}$]",
                  'Forest fraction':"[-]",'Green vegetation\nfraction maximum':"[-]",'LAI maximum':"[-]"}
     
-    pads =  {"Aridity": 75, 'Fraction of precipitation\nfalling as snow': 65, 'Frequency of high\nprecipitation events':70,
+    pads =  {"Aridity": 75, 'Fraction of precipitation\nfalling as snow': 65, 'Frequency of high\nprecipitation events':70,"Precipitation seasonality":70,
              'Subsurface permeability': 70, 'Subsurface porosity':70,
                  'Clay fraction':65,'Depth to bedrock':65, 'Sand fraction':65,
                  'Area':50, 'Mean elevation':60, 'Mean slope':65,
@@ -135,10 +136,10 @@ def plot_all_attributes_swarm(combined_df, color_dict, cols_classes):
 
         ax = axes[i]
         # Get the five attributes with the lowest range
-        sns.violinplot(y=combined_df[att], x=combined_df["Cluster"], edgecolor="gray", linewidth=0.2,
+        sns.boxplot(y=combined_df[att], x=combined_df["Cluster"], 
                         palette=["#e6194B", "#f58231", "#fffac8", "#bfef45",  "#3cb44b", 
-             "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"], size=2, cut=True, inner="point", scale="width",
-                        ax=ax,alpha=1)
+             "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"], whis=100, width=0.9,
+                        ax=ax)
         ax.set_xlabel("")
         ax.yaxis.grid(color="grey")
         ax.set_axisbelow(True)
@@ -160,12 +161,13 @@ def plot_all_attributes_swarm(combined_df, color_dict, cols_classes):
         handles.append(mpatches.Patch(color=color, label=att))
     
     axes[13].set_xlabel("Cluster",alpha=alpha)
-    legend = axes[13].legend(handles=handles,bbox_to_anchor=(-0.1, -0.1), frameon=True, fancybox=True, facecolor="white", edgecolor="grey")
+    legend = axes[13].legend(handles=handles,bbox_to_anchor=(-0.05, -0.7), frameon=True, fancybox=True, facecolor="white", edgecolor="grey")
     for text in legend.get_texts():
         text.set_color("grey")
                  
-    fig.set_size_inches(10, 11.7)
-    fig.tight_layout()
+    fig.set_size_inches(6, 30)
+   # fig.tight_layout()
+    fig.subplots_adjust(hspace=0)
     plt.savefig("cluster_atts.png", dpi=200, bbox_inches="tight")
 
 def calc_coefficient_of_variation(att_df_with_labels):
@@ -217,7 +219,7 @@ def calc_scaled_cv(cv_df):
 if __name__ == "__main__":
     # Dictionary for the broad categories
     color_dict = {"Area": "#D64139", "Mean elevation": "#D64139", "Mean slope": "#D64139",
-                  "Fraction of precipitation\nfalling as snow": "royalblue", "Aridity": "royalblue", "Frequency of high\nprecipitation events": "royalblue",
+                  "Fraction of precipitation\nfalling as snow": "royalblue", "Aridity": "royalblue", "Frequency of high\nprecipitation events": "royalblue", "Precipitation seasonality":"royalblue",
                   "Depth to bedrock": "#D6BD39", "Sand fraction": "#D6BD39", "Clay fraction": "#D6BD39",
                   "Forest fraction": "forestgreen", "LAI maximum": "forestgreen", "Green vegetation\nfraction maximum": "forestgreen",
                   "Dominant geological class": "grey", "Subsurface porosity": "grey", "Subsurface permeability": "grey"}
@@ -237,11 +239,11 @@ if __name__ == "__main__":
     labels = clustering.create_cluster_labels(pca_df, 10)
     combined_df = pd.concat([pca_df, att_df, labels], axis=1)
     # Create the figures for the clusters
-   # plot_all_regressions(combined_df, color_dict)
-    plot_all_attributes_swarm(combined_df,color_dict, cols_classes)
-    sig_plot_df = pd.concat([sig_df, combined_df["Cluster"]], axis=1)
-    plot_all_signatures_swarm(sig_plot_df, color_dict)
-#    cv_att = calc_coefficient_of_variation(pd.concat([att_df, labels], axis=1))
-#    cv_att_scaled = calc_scaled_cv(cv_att)
-#    cv_sig = calc_coefficient_of_variation(pd.concat([sig_df, labels], axis=1))
-#    cv_sig_scaled = calc_scaled_cv(cv_sig)
+#    plot_all_regressions(combined_df, color_dict)
+#    plot_all_attributes_swarm(combined_df,color_dict, cols_classes)
+#    sig_plot_df = pd.concat([sig_df, combined_df["Cluster"]], axis=1)
+#    plot_all_signatures_swarm(sig_plot_df, color_dict)
+    cv_att = calc_coefficient_of_variation(pd.concat([att_df, labels], axis=1))
+    cv_att_scaled = calc_scaled_cv(cv_att)
+    cv_sig = calc_coefficient_of_variation(pd.concat([sig_df, labels], axis=1))
+    cv_sig_scaled = calc_scaled_cv(cv_sig)

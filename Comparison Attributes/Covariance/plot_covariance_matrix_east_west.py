@@ -17,7 +17,7 @@ import matplotlib.patches as mpatches
 alpha=0.7
 # Dictionary for the broad categories
 color_dict = {"Area": "#D64139", "Mean elevation": "#D64139", "Mean slope": "#D64139",
-              "Fraction of precipitation\nfalling as snow": "royalblue", "Aridity": "royalblue", "Frequency of high\nprecipitation events": "royalblue",
+              "Fraction of precipitation\nfalling as snow": "royalblue", "Aridity": "royalblue", "Frequency of high\nprecipitation events": "royalblue", "Precipitation seasonality":"royalblue",
               "Depth to bedrock": "#D6BD39", "Sand fraction": "#D6BD39", "Clay fraction": "#D6BD39",
               "Forest fraction": "forestgreen", "LAI maximum": "forestgreen", "Green vegetation\nfraction maximum": "forestgreen",
               "Dominant geological class": "grey", "Subsurface porosity": "grey", "Subsurface permeability": "grey"}
@@ -58,18 +58,50 @@ for tick_label in ax1.axes.get_xticklabels():
     tick_text = tick_label.get_text()
     tick_label.set_color(color_dict[tick_text])
 # Add rectangles to group attributes
-for i in range(0, 16, 3):
-    for j in range(0,16,3):        
-        ax1.add_patch(Rectangle((i, j), 3, 3, fill=False, edgecolor='black', lw=1))
+i = 0
+while i <= 16:
+    if i == 6:
+        i += 1
+    j = 0
+    while j <= 16:
+        if j == 6:
+            j += 1
+        if i == 3 and j == 3:
+            ax1.add_patch(Rectangle((i, j), 4, 4, fill=False, edgecolor='black', lw=1))
+        elif i == 3 and not j == 3:
+            ax1.add_patch(Rectangle((i, j), 4, 3, fill=False, edgecolor='black', lw=1))
+        elif not i == 3 and j == 3:
+            ax1.add_patch(Rectangle((i, j), 3, 4, fill=False, edgecolor='black', lw=1))
+        else:
+            ax1.add_patch(Rectangle((i, j), 3, 3, fill=False, edgecolor='black', lw=1))
+        j += 3
+    i += 3
+
 # Plot Eastern US
 sns.heatmap(east.corr(), ax=ax2, cmap="coolwarm", square=True, linewidth=0.5,yticklabels=True, cbar=False, annot=round(east.corr(),1), xticklabels=False)
 ax2.text(1.01, -0.5, "b) Eastern US",
         rotation=270, size=12, weight='bold',
         ha='left', va='center', transform=ax1.transAxes, alpha=alpha)
 # Add rectangles to group attributes
-for i in range(0, 16, 3):
-    for j in range(0,16,3):        
-        ax2.add_patch(Rectangle((i, j), 3, 3, fill=False, edgecolor='black', lw=1))
+i = 0
+while i <= 16:
+    if i == 6:
+        i += 1
+    j = 0
+    while j <= 16:
+        if j == 6:
+            j += 1
+        if i == 3 and j == 3:
+            ax2.add_patch(Rectangle((i, j), 4, 4, fill=False, edgecolor='black', lw=1))
+        elif i == 3 and not j == 3:
+            ax2.add_patch(Rectangle((i, j), 4, 3, fill=False, edgecolor='black', lw=1))
+        elif not i == 3 and j == 3:
+            ax2.add_patch(Rectangle((i, j), 3, 4, fill=False, edgecolor='black', lw=1))
+        else:
+            ax2.add_patch(Rectangle((i, j), 3, 3, fill=False, edgecolor='black', lw=1))
+        j += 3
+    i += 3
+
 
 # Color the ylabels
 for tick_label in ax2.axes.get_yticklabels():
@@ -87,9 +119,25 @@ ax3.text(1.01, -1.51, "c) Differences between East and West",
         rotation=270, size=12, weight='bold',
         ha='left', va='center', transform=ax1.transAxes, alpha=alpha)
 # Add rectangles to group attributes
-for i in range(0, 16, 3):
-    for j in range(0,16,3):        
-        ax3.add_patch(Rectangle((i, j), 3, 3, fill=False, edgecolor='black', lw=1))
+i = 0
+while i <= 16:
+    if i == 6:
+        i += 1
+    j = 0
+    while j <= 16:
+        if j == 6:
+            j += 1
+        if i == 3 and j == 3:
+            ax3.add_patch(Rectangle((i, j), 4, 4, fill=False, edgecolor='black', lw=1))
+        elif i == 3 and not j == 3:
+            ax3.add_patch(Rectangle((i, j), 4, 3, fill=False, edgecolor='black', lw=1))
+        elif not i == 3 and j == 3:
+            ax3.add_patch(Rectangle((i, j), 3, 4, fill=False, edgecolor='black', lw=1))
+        else:
+            ax3.add_patch(Rectangle((i, j), 3, 3, fill=False, edgecolor='black', lw=1))
+        j += 3
+    i += 3
+
 # Color the ylabels
 for tick_label in ax3.axes.get_yticklabels():
     tick_text = tick_label.get_text()
@@ -118,3 +166,4 @@ fig.set_size_inches(20,20)
 fig.tight_layout()
 fig.subplots_adjust(hspace=0.01)
 plt.savefig("covariability.png", dpi=250, bbox_inches="tight")
+plt.close()

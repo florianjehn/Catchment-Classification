@@ -15,8 +15,6 @@ import matplotlib.pyplot as plt
 import read_attributes_signatures
 import os
 import sys
-import scipy
-
 
 
 def create_cluster_labels(df: pd.DataFrame, num_groups, return_score=False):
@@ -45,6 +43,8 @@ def biplot(pca_df_with_labels,pca_object):
     """
     colors= ["#e6194B", "#f58231", "#fffac8", "#bfef45",  "#3cb44b", 
              "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"]
+    n_list = ["1 (230)", "2 (101)", "3 (7)", "4 (52)", "5 (9)",
+              "6 (18)", "7 (23)", "8 (90)", "9 (61)", "10 (52)"]
     # Basic set up
     alpha = 0.6
     fig = plt.Figure()
@@ -57,7 +57,8 @@ def biplot(pca_df_with_labels,pca_object):
                hue="Cluster",
                fit_reg=False,
                palette=colors,#"gist_earth",
-               scatter_kws={"s": 30, "alpha":1, "edgecolor":"black", "linewidth":0.3, "zorder":2})
+               scatter_kws={"s": 30, "alpha":1, "edgecolor":"black", "linewidth":0.3, "zorder":2},
+               legend=False)
     ax = plt.gca()
     # Names of the factors
     factors = ['Mean annual discharge', 'Mean winter discharge', 'Mean half-flow date',
@@ -88,11 +89,14 @@ def biplot(pca_df_with_labels,pca_object):
     plt.setp(ax.get_xticklabels(), alpha=alpha)
     plt.ylim(-2.5, 7)
     ax.tick_params(axis=u'both', which=u'both',length=0)
-    legend = plot._legend
-    for text in legend.get_texts():
+ #   legend = plot._legend
+    legend = plt.legend(bbox_to_anchor=[1,1])
+    for i,text in enumerate(legend.get_texts()):
+        text.set_text(n_list[i])
         text.set_color("grey")
     legend.set_title("Catchment\n   Cluster")
     legend.get_title().set_color("grey")
+   # legend.bbox_to_anchor=[0,10]
 
     # Save the plot
     fig.tight_layout()
@@ -128,11 +132,11 @@ def elbow(min_clusters, max_clusters, df):
 if __name__ == "__main__":
     variance = 0.8
     pca_df = pca.pca_signatures(variance)
-    metrics = elbow(5, 20, pca_df)
+#    metrics = elbow(5, 20, pca_df)
     labels = create_cluster_labels(pca_df, 10)
 #    save_clusters_with_loc(labels)
     pca_df_with_labels = pd.concat([pca_df, labels], axis=1)
 #    print(pca_df_with_labels.describe())
-#    pca_object = pca.pca_signatures(0.80, return_pca=True)
-#    biplot(pca_df_with_labels, pca_object)
+    pca_object = pca.pca_signatures(0.80, return_pca=True)
+    biplot(pca_df_with_labels, pca_object)
     

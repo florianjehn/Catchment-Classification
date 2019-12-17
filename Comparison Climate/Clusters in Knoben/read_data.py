@@ -18,14 +18,14 @@ def read_data():
     # Rescale the data to the original values of Wouter
     # Find the new min max values by looking how far the current min max values 
     # are away to the min max of the range.
-    df["Aridity"] = rescaler(df["Aridity"], 1, 0,  1, -1)
-    df["Seasonality"] = rescaler(df["Seasonality"], 1, 0, 2, 0)
+    df["Aridity"] = rescaler(df["Aridity"], 1, 0,  1, -1, invert_sign=True).values
+    df["Seasonality"] = rescaler(df["Seasonality"], 1, 0, 2, 0).values
 
     
     return df
 
 
-def rescaler(series, max_range_old, min_range_old ,max_range_new, min_range_new):
+def rescaler(series, max_range_old, min_range_old ,max_range_new, min_range_new, invert_sign=False):
     """Rescales a series, while maintaining the distance of the highest 
     and lowest value in the data to the highest and lowest vlaue of the desired 
     rnage."""
@@ -52,6 +52,18 @@ def rescaler(series, max_range_old, min_range_old ,max_range_new, min_range_new)
 
     # Scale the data
     series = MinMaxScaler(feature_range=[min_series_new, max_series_new]).fit_transform(series.to_numpy().reshape(-1,1))
+    series = pd.Series(series.flatten())
+  #  print(series)
+    # Aridity has to be inverted as a value of 1 in the files provided by wouter
+    # is equal to - 1 in regard to the value it his paper. 
+    if invert_sign:
+        for i in series.index:
+            print(series[i])
+            if series[i] > 0:
+                series[i] = 0 - series[i]
+            else:
+                series[i] = abs(series[i])
+    print(series)
     return series   
 
 

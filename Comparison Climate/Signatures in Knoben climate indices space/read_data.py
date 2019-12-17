@@ -18,7 +18,7 @@ def read_data():
     # Rescale the data to the original values of Wouter
     # Find the new min max values by looking how far the current min max values 
     # are away to the min max of the range.
-    df["Aridity"] = rescaler(df["Aridity"], 1, 0,  1, -1)
+    df["Aridity"] = rescaler(df["Aridity"], 0, 1,  1, -1)
     df["Seasonality"] = rescaler(df["Seasonality"], 1, 0, 2, 0)
 
     
@@ -56,4 +56,4 @@ def rescaler(series, max_range_old, min_range_old ,max_range_new, min_range_new)
 
 
 df = read_data()
-df.to_csv("knoben_climate_jehn_signatures.csv")
+df.to_csv("knoben_climate_jehn_signatures_test.csv")

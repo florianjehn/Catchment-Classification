@@ -117,7 +117,7 @@ def plot_regressions(r2_df_weighted, describer, color_dict, cols_classes):
 if __name__ == "__main__":
     # Dictionary for the broad categories
     color_dict = {"Area": "#D64139", "Mean elevation": "#D64139", "Mean slope": "#D64139",
-                  "Fraction of precipitation\nfalling as snow": "royalblue", "Aridity": "royalblue", "Frequency of high\nprecipitation events": "royalblue",
+                  "Fraction of precipitation\nfalling as snow": "royalblue", "Aridity": "royalblue", "Frequency of high\nprecipitation events": "royalblue", "Precipitation seasonality":"royalblue",
                   "Depth to bedrock": "#D6BD39", "Sand fraction": "#D6BD39", "Clay fraction": "#D6BD39",
                   "Forest fraction": "forestgreen", "LAI maximum": "forestgreen", "Green vegetation\nfraction maximum": "forestgreen",
                   "Dominant geological class": "grey", "Subsurface porosity": "grey", "Subsurface permeability": "grey"}

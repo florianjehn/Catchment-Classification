@@ -45,9 +45,17 @@ def plot_signatures_2d(knoben):
                 plt.setp(ax.get_xticklabels(), alpha=alpha)
                 ax.tick_params(axis=u'both', which=u'both',length=0)
                 ax.grid(True, color="lightgrey", zorder=0)
+                if climate_index_x == "Aridity":
+                    ax.set_xlim(-1.1,1.1)
+                elif climate_index_x == "Seasonality":
+                    ax.set_xlim(-0.1,2.1)
+                if climate_index_y == "Aridity":
+                    ax.set_ylim(-1.1,1.1)
+                elif climate_index_y == "Precip. as snow":
+                    ax.set_ylim(-0.1,1.1)
                 for spine in ax.spines.values():
                     spine.set_visible(False)
-    fig.set_size_inches(13,13)
+    fig.set_size_inches(15,25)
     fig.tight_layout()
     plt.savefig("signatures_2d.png", dpi=300)
     

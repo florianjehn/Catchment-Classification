@@ -24,13 +24,13 @@ def seperate_attributes_signatures(meta_df):
     signatures and returns them in seperate dataframes.
     We only selected the attributes also used by Addor et al 2018
     """
-    att_df = meta_df.loc[:, ["area_gages2","elev_mean", "slope_mean", 
+    att_df = meta_df.loc[:, ["area_gages2","elev_mean", "slope_mean", "p_seasonality",
                              "frac_snow", "aridity","high_prec_freq", "soil_depth_pelletier",
                              "sand_frac", "clay_frac", "frac_forest", "lai_max", "gvf_max", 
                              "geol_1st_class", "geol_porostiy", "geol_permeability"
                               ]]
     # Rename the columns
-    att_df.columns = ["Area", "Mean elevation", "Mean slope", 
+    att_df.columns = ["Area", "Mean elevation", "Mean slope", "Precipitation seasonality",
                       "Fraction of precipitation\nfalling as snow", "Aridity", "Frequency of high\nprecipitation events",
                       "Depth to bedrock", "Sand fraction", "Clay fraction",
                       "Forest fraction", "LAI maximum", "Green vegetation\nfraction maximum",
