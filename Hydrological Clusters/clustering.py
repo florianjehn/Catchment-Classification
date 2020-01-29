@@ -43,8 +43,8 @@ def biplot(pca_df_with_labels,pca_object):
     """
     colors= ["#e6194B", "#f58231", "#fffac8", "#bfef45",  "#3cb44b", 
              "#42d4f4", "#4363d8", "#911eb4", "#a9a9a9", "#ffffff"]
-    n_list = ["1 (230)", "2 (101)", "3 (7)", "4 (52)", "5 (9)",
-              "6 (18)", "7 (23)", "8 (90)", "9 (61)", "10 (52)"]
+    n_list = ["1  (n=230)", "2  (n=101)", "3  (n=7)", "4  (n=52)", "5  (n=9)",
+              "6  (n=18)", "7  (n=23)", "8  (n=90)", "9  (n=61)", "10 (n=52)"]
     # Basic set up
     alpha = 0.6
     fig = plt.Figure()
@@ -70,11 +70,18 @@ def biplot(pca_df_with_labels,pca_object):
         ax.arrow(0, 0, arrow_size*v[0], arrow_size*v[1], head_width=0.2, head_length=0.2, linewidth=1.5, color="grey", zorder=3)
         # Fix the overlapping text
         if factors[i] == "Mean annual discharge":
-            ax.text(v[0]*text_pos, v[1]*text_pos + 0.2, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4)
+            txt = ax.text(v[0]*text_pos, v[1]*text_pos + 0.3, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4, alpha=0.75)
         elif factors[i] == "Q95 (high flow)":
-            ax.text(v[0]*text_pos, v[1]*text_pos -0.2, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4)
+            txt = ax.text(v[0]*text_pos, v[1]*text_pos -0.3, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4, alpha=0.75)
+        elif factors[i] == "Mean winter discharge":
+            txt = ax.text(v[0]*text_pos, v[1]*text_pos -0.2, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4, alpha=0.75)
+        elif factors[i] == "Runoff ratio":
+            txt = ax.text(v[0]*text_pos, v[1]*text_pos +0.2, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4, alpha=0.75)
+        elif factors[i] == "Mean half-flow date":
+            txt = ax.text(v[0]*text_pos, v[1]*text_pos -0.25, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4, alpha=0.75)
         else:
-            ax.text(v[0]*text_pos, v[1]*text_pos, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4)
+            txt = ax.text(v[0]*text_pos, v[1]*text_pos, factors[i], color='black', ha='center', va='center', fontsize=9, zorder=4, alpha=0.75)
+        txt.set_bbox(dict(facecolor="lightgrey", alpha=0.7, boxstyle="round"))
 
     # Make plot nicer by removing the borders
     ax.set_facecolor("white")

@@ -44,7 +44,7 @@ ax1 = axes[0]
 ax2 = axes[1]
 ax3 = axes[2]
 # Plot Western US
-sns.heatmap(west.corr(), ax=ax1, cmap="coolwarm", square=True, linewidth=0.5, yticklabels=True, cbar=False, annot=round(west.corr(),1))
+sns.heatmap(west.corr(method="spearman"), ax=ax1, cmap="coolwarm", square=True, linewidth=0.5, yticklabels=True, cbar=False, annot=round(west.corr(),1))
 ax1.xaxis.tick_top()
 plt.setp( ax1.xaxis.get_majorticklabels(), rotation=90)
 ax1.text(1.01, 0.5, "a) Western US",
@@ -78,7 +78,7 @@ while i <= 16:
     i += 3
 
 # Plot Eastern US
-sns.heatmap(east.corr(), ax=ax2, cmap="coolwarm", square=True, linewidth=0.5,yticklabels=True, cbar=False, annot=round(east.corr(),1), xticklabels=False)
+sns.heatmap(east.corr(method="spearman"), ax=ax2, cmap="coolwarm", square=True, linewidth=0.5,yticklabels=True, cbar=False, annot=round(east.corr(),1), xticklabels=False)
 ax2.text(1.01, -0.5, "b) Eastern US",
         rotation=270, size=12, weight='bold',
         ha='left', va='center', transform=ax1.transAxes, alpha=alpha)
@@ -111,7 +111,7 @@ for tick_label in ax2.axes.get_yticklabels():
 # calc difference
 diff_df = pd.DataFrame()
 for column in west.corr():
-    diff_df[column] = abs(west.corr()[column] - east.corr()[column])
+    diff_df[column] = abs(west.corr(method="spearman")[column] - east.corr(method="spearman")[column])
 
 ax3=axes[2]
 sns.heatmap(diff_df, cmap="Blues", annot=round(diff_df,1),yticklabels=True, cbar=False, ax=ax3, linewidth=0.5,square=True)
