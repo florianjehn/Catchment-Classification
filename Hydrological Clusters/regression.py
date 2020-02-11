@@ -111,7 +111,7 @@ def plot_regressions(r2_df_weighted, describer, color_dict, cols_classes):
     for text in legend.get_texts():
         text.set_color("grey")
     fig.set_size_inches(15,10)
-    plt.savefig("r2_scores_ " + describer + ".png", bbox_inches="tight")
+    plt.savefig("r2_scores_ " + describer + ".png", bbox_inches="tight", dpi=300)
     
 
 if __name__ == "__main__":

@@ -108,7 +108,7 @@ def plot_all_signatures_swarm(sig_plot_df, color_dict):
     fig.set_size_inches(6, 30)
     fig.subplots_adjust(hspace=0)
 
-    plt.savefig("cluster_sigs.png", dpi=200, bbox_inches="tight")
+    plt.savefig("cluster_sigs.png", dpi=400, bbox_inches="tight")
 
 def plot_all_attributes_swarm(combined_df, color_dict, cols_classes):
     """
@@ -168,7 +168,7 @@ def plot_all_attributes_swarm(combined_df, color_dict, cols_classes):
     fig.set_size_inches(6, 30)
    # fig.tight_layout()
     fig.subplots_adjust(hspace=0)
-    plt.savefig("cluster_atts.png", dpi=200, bbox_inches="tight")
+    plt.savefig("cluster_atts.png", dpi=400, bbox_inches="tight")
 
 def calc_coefficient_of_variation(att_df_with_labels):
     """
@@ -239,11 +239,11 @@ if __name__ == "__main__":
     labels = clustering.create_cluster_labels(pca_df, 10)
     combined_df = pd.concat([pca_df, att_df, labels], axis=1)
     # Create the figures for the clusters
-#    plot_all_regressions(combined_df, color_dict)
-#    plot_all_attributes_swarm(combined_df,color_dict, cols_classes)
-#    sig_plot_df = pd.concat([sig_df, combined_df["Cluster"]], axis=1)
-#    plot_all_signatures_swarm(sig_plot_df, color_dict)
-    cv_att = calc_coefficient_of_variation(pd.concat([att_df, labels], axis=1))
-    cv_att_scaled = calc_scaled_cv(cv_att)
-    cv_sig = calc_coefficient_of_variation(pd.concat([sig_df, labels], axis=1))
-    cv_sig_scaled = calc_scaled_cv(cv_sig)
+    plot_all_regressions(combined_df, color_dict)
+    plot_all_attributes_swarm(combined_df,color_dict, cols_classes)
+    sig_plot_df = pd.concat([sig_df, combined_df["Cluster"]], axis=1)
+    plot_all_signatures_swarm(sig_plot_df, color_dict)
+    # cv_att = calc_coefficient_of_variation(pd.concat([att_df, labels], axis=1))
+    # cv_att_scaled = calc_scaled_cv(cv_att)
+    # cv_sig = calc_coefficient_of_variation(pd.concat([sig_df, labels], axis=1))
+    # cv_sig_scaled = calc_scaled_cv(cv_sig)

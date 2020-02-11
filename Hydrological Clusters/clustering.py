@@ -107,7 +107,7 @@ def biplot(pca_df_with_labels,pca_object):
 
     # Save the plot
     fig.tight_layout()
-    plt.savefig("clusters.png", dpi=200, bbox_inches="tight")
+    plt.savefig("clusters.png", dpi=400, bbox_inches="tight")
 
 
 def save_clusters_with_loc(labels):
